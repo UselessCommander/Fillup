@@ -5,7 +5,7 @@ import { usePlaces } from '../context/PlacesContext.jsx';
 import MapScreen from '../components/MapScreen.jsx';
 import PlaceBottomSheet from '../components/PlaceBottomSheet.jsx';
 
-function openDirections(place) {
+function openGoogleMaps(place) {
   window.open(
     `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`,
     '_blank',
@@ -18,28 +18,52 @@ export default function MapTab() {
   const { places } = usePlaces();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [selected, setSelected] = useState(null);
+  
+  const [transportMode, setTransportMode] = useState('driving');
+  const [routeStats, setRouteStats] = useState(null);
+  const [isLiveNavigating, setIsLiveNavigating] = useState(false);
+
+  const handleClearSelection = () => {
+    setSelected(null);
+    setRouteStats(null);
+    setIsLiveNavigating(false);
+  };
 
   return (
     <>
       <MapScreen
         places={places}
         selectedPlace={selected}
-        onSelectPlace={setSelected}
-        onClearSelection={() => setSelected(null)}
-        onDirections={openDirections}
+        onSelectPlace={(p) => {
+          setSelected(p);
+          setIsLiveNavigating(false);
+        }}
+        onClearSelection={handleClearSelection}
+        transportMode={transportMode}
+        onRouteStatsChange={setRouteStats}
+        
+        isLiveNavigating={isLiveNavigating}
+        onStopNavigation={() => setIsLiveNavigating(false)}
+        routeStats={routeStats}
       />
-      {selected && (
+      
+      {selected && !isLiveNavigating && (
         <PlaceBottomSheet
           place={selected}
-          onClose={() => setSelected(null)}
-          onDirections={openDirections}
+          onClose={handleClearSelection}
+          onDirections={openGoogleMaps}
+          onStartLiveNavigation={() => setIsLiveNavigating(true)}
           onSeeProducts={(place) => {
             const id = place.id;
-            setSelected(null);
+            handleClearSelection();
             navigate(`/places/${id}`);
           }}
           favoriteActive={isFavorite(selected.id)}
           onToggleFavorite={() => toggleFavorite(selected.id)}
+          
+          transportMode={transportMode}
+          onTransportModeChange={setTransportMode}
+          routeStats={routeStats}
         />
       )}
     </>

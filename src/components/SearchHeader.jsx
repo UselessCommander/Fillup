@@ -86,17 +86,26 @@ export default function SearchHeader({
 }) {
   const title =
     variant === 'home' ? (
-      <div className="flex items-center gap-2">
-        <span
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 ring-2 ring-white/30"
-          aria-hidden
-        >
-          <span className="h-5 w-5 rounded-full" style={{ background: GREEN }} />
+      <div className="flex items-center gap-3 mb-1">
+        <div className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-full bg-white shadow-sm p-1.5">
+          <img 
+            src="/logo.png" 
+            alt="FillUp Logo" 
+            className="h-full w-full object-contain"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'block';
+            }}
+          />
+          {/* Fallback hvis billedet mangler */}
+          <span className="hidden h-full w-full rounded-full" style={{ background: GREEN }} />
+        </div>
+        <span className="text-[20px] font-bold tracking-tight text-white shadow-black/10 text-shadow-sm">
+          Velkommen til FillUp!
         </span>
-        <span className="text-lg font-semibold tracking-tight">Velkommen til FillUp!</span>
       </div>
     ) : (
-      <p className="text-sm font-medium leading-snug text-white/95">
+      <p className="text-[15px] font-medium leading-snug text-white/95 text-center mt-1">
         Søg efter refill i nærheden i dit område
       </p>
     );
@@ -119,8 +128,8 @@ export default function SearchHeader({
             <input
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full rounded-2xl border-0 bg-white py-3 pl-10 pr-3 text-sm text-slate-800 shadow-inner outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-white/40"
-              placeholder="København, Denmark"
+              className="w-full rounded-[5px] border-0 bg-white py-3 pl-10 pr-3 text-sm text-slate-800 shadow-inner outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-white/40"
+              placeholder="Søg på by (f.eks. Århus) eller butik..."
               type="search"
               autoComplete="off"
             />

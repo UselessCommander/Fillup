@@ -1,0 +1,10 @@
+{
+  "name": "FillUp",
+  "short_name": "FillUp",
+  "description": "Find refill-stationer og hverdagsprodukter uden unødig emballage.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#139ED2",
+  "lang": "da"
+}

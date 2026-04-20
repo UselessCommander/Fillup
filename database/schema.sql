@@ -1,0 +1,2 @@
+-- FillUp: PostgreSQL (Supabase)
+-- Kør `supabase.sql` i Supabase SQL Editor, eller lad serveren oprette tabeller (server/db.js).

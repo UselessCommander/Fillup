@@ -1,0 +1,11 @@
+node_modules
+dist
+.DS_Store
+*.log
+.env
+.env.*
+
+# SQLite database (oprettes ved første serverstart)
+database/*.sqlite
+database/*.sqlite-shm
+database/*.sqlite-wal

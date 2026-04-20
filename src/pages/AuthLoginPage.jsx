@@ -3,6 +3,8 @@ import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Droplet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
+import SplashScreen from '../components/SplashScreen.jsx';
+
 const BLUE = '#139ED2';
 const GREEN = '#94CF53';
 
@@ -25,11 +27,7 @@ export default function AuthLoginPage() {
   const [error, setError] = useState(null);
 
   if (!authReady) {
-    return (
-      <div className="flex min-h-full items-center justify-center bg-slate-50 text-sm text-slate-600">
-        Indlæser…
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (user) {
@@ -45,17 +43,24 @@ export default function AuthLoginPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-slate-50">
+    <div className="flex min-h-[100dvh] flex-col bg-slate-50">
       <div
-        className="px-6 pb-10 pt-14 text-center text-white"
+        className="px-6 pb-12 pt-16 text-center text-white relative overflow-hidden"
         style={{ backgroundColor: BLUE }}
       >
-        <div className="mx-auto flex max-w-md flex-col items-center">
-          <div className="mb-4 flex items-center gap-2">
-            <Droplet className="h-10 w-10" style={{ color: GREEN }} strokeWidth={2} />
-            <span className="text-2xl font-bold tracking-tight">FillUp</span>
+        <div className="absolute inset-0 opacity-20" style={{ background: `radial-gradient(circle at top right, ${GREEN}, transparent)` }} />
+        
+        <div className="relative z-10 mx-auto flex max-w-md flex-col items-center">
+          <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-white shadow-xl p-2 ring-4 ring-white/20">
+            <img 
+              src="/logo.png" 
+              alt="FillUp Logo" 
+              className="h-full w-full object-contain"
+              onError={(e) => e.target.style.display = 'none'}
+            />
           </div>
-          <p className="text-sm text-white/90">Log ind for at finde refill-steder nær dig.</p>
+          <h2 className="text-2xl font-bold tracking-tight drop-shadow-md">Velkommen tilbage</h2>
+          <p className="mt-2 text-[15px] text-white/90 drop-shadow-sm">Log ind for at finde refill-steder nær dig.</p>
         </div>
       </div>
 

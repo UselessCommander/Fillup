@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
           setMe(null);
         }
       } finally {
+        await new Promise((r) => setTimeout(r, 1500));
         if (!cancelled) setAuthReady(true);
       }
     })();

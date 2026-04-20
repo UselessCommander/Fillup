@@ -3,6 +3,8 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Droplet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
+import SplashScreen from '../components/SplashScreen.jsx';
+
 const BLUE = '#139ED2';
 const GREEN = '#94CF53';
 
@@ -17,11 +19,7 @@ export default function AuthRegisterPage() {
   const [error, setError] = useState(null);
 
   if (!authReady) {
-    return (
-      <div className="flex min-h-full items-center justify-center bg-slate-50 text-sm text-slate-600">
-        Indlæser…
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (user) {
@@ -41,25 +39,32 @@ export default function AuthRegisterPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-slate-50">
+    <div className="flex min-h-[100dvh] flex-col bg-slate-50">
       <div
-        className="relative px-6 pb-8 pt-10 text-white"
+        className="relative px-6 pb-12 pt-16 text-white overflow-hidden"
         style={{ backgroundColor: BLUE }}
       >
+        <div className="absolute inset-0 opacity-20" style={{ background: `radial-gradient(circle at top right, ${GREEN}, transparent)` }} />
+        
         <button
           type="button"
           onClick={() => navigate('/login')}
-          className="absolute left-4 top-4 rounded-[5px] bg-white/15 p-2 text-white hover:bg-white/25"
+          className="absolute left-4 top-4 z-20 rounded-[5px] bg-white/15 p-2 text-white hover:bg-white/25"
           aria-label="Tilbage til log ind"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="mx-auto flex max-w-md flex-col items-center pt-4 text-center">
-          <div className="mb-3 flex items-center gap-2">
-            <Droplet className="h-9 w-9" style={{ color: GREEN }} strokeWidth={2} />
-            <span className="text-xl font-bold">FillUp</span>
+        <div className="relative z-10 mx-auto flex max-w-md flex-col items-center text-center">
+          <div className="mb-4 flex h-[64px] w-[64px] items-center justify-center rounded-2xl bg-white shadow-xl p-2 ring-4 ring-white/20">
+            <img 
+              src="/logo.png" 
+              alt="FillUp Logo" 
+              className="h-full w-full object-contain"
+              onError={(e) => e.target.style.display = 'none'}
+            />
           </div>
-          <p className="text-sm text-white/90">Opret en demo-bruger for at komme i gang.</p>
+          <h2 className="text-2xl font-bold tracking-tight drop-shadow-md">Opret bruger</h2>
+          <p className="mt-2 text-[15px] text-white/90 drop-shadow-sm">Få adgang til dit digitale refill-kort gratis.</p>
         </div>
       </div>
 

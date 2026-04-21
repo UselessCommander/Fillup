@@ -13,19 +13,7 @@ export default function HomeScreen({
 }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-      <div className="relative w-full overflow-hidden bg-slate-200">
-        <img
-          src="/hero-refill.png"
-          alt=""
-          className="h-52 w-full object-cover object-center"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
-      </div>
-
-      <div className="relative -mt-6 flex-1 rounded-t-[28px] bg-white px-4 pb-28 pt-5 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+      <div className="flex-1 bg-white px-4 pb-28 pt-5">
         <h3 className="text-lg font-bold text-slate-900">Refill i dit område</h3>
         <p className="mt-1 text-sm text-slate-600">
           Tryk på et sted for at se produkter og afstand — perfekt til shampoo, vaskemiddel og mere.

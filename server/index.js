@@ -327,7 +327,11 @@ async function start() {
   process.on('SIGTERM', shutdown);
 }
 
-start().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  start().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

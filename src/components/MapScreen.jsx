@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Map, { Marker, Source, Layer } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { LocateFixed, Layers } from 'lucide-react';
+import { LocateFixed, Layers, Box } from 'lucide-react';
 import { useUserLocation } from '../context/UserLocationContext.jsx';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -44,6 +44,7 @@ export default function MapScreen({
 
   const [activeStyle, setActiveStyle] = useState(MAP_STYLES[0]);
   const [showStyleMenu, setShowStyleMenu] = useState(false);
+  const [is3D, setIs3D] = useState(false);
 
   // Auto-lokation ved sted-valg
   useEffect(() => {
@@ -242,6 +243,32 @@ export default function MapScreen({
             />
           </Source>
         )}
+
+        {/* 3D Bygninger */}
+        {is3D && (
+          <Layer
+            id="3d-buildings"
+            source="composite"
+            source-layer="building"
+            filter={['==', 'extrude', 'true']}
+            type="fill-extrusion"
+            minzoom={15}
+            paint={{
+              'fill-extrusion-color': '#e2e8f0',
+              'fill-extrusion-height': [
+                'interpolate', ['linear'], ['zoom'],
+                15, 0,
+                15.05, ['get', 'height']
+              ],
+              'fill-extrusion-base': [
+                'interpolate', ['linear'], ['zoom'],
+                15, 0,
+                15.05, ['get', 'min_height']
+              ],
+              'fill-extrusion-opacity': 0.8
+            }}
+          />
+        )}
       </Map>
 
       {/* Live Navigation - KÆMPE HUD I TOPPEN */}
@@ -312,6 +339,29 @@ export default function MapScreen({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* 3D Toggle */}
+      {!selectedPlace && !isLiveNavigating && (
+        <div className="absolute z-[10]" style={{ top: 68, right: 12 }}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const new3D = !is3D;
+              setIs3D(new3D);
+              if (mapRef.current) {
+                mapRef.current.flyTo({ pitch: new3D ? 60 : 0, duration: 1000 });
+              }
+            }}
+            className={`flex h-[44px] w-[44px] items-center justify-center rounded-[10px] border border-black/5 shadow-md transition ${
+              is3D ? 'bg-[#139ED2] text-white' : 'bg-white text-slate-800 hover:bg-slate-50'
+            }`}
+            aria-label="Toggle 3D"
+          >
+            <Box className="h-5 w-5" />
+          </button>
         </div>
       )}
 

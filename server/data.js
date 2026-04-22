@@ -115,6 +115,18 @@ export const PLACES = [
     products: [{ name: 'Ansigtscreme', price: '80 kr / 100 ml', category: 'Hudpleje', inStock: true }],
     rating: 4.9,
   },
+  {
+    id: 9,
+    name: 'Refill Guldbergsgade',
+    address: 'Guldbergsgade 29B, 2200 København N',
+    lat: 55.6925,
+    lng: 12.5552,
+    description: 'Nyt lokalt refill-spot på Guldbergsgade. Kom forbi med din egen emballage!',
+    categories: ['Shampoo', 'Sæbe'],
+    productSummary: 'Shampoo, Sæbe',
+    products: [{ name: 'Shampoo Bar', price: '60 kr / stk', category: 'Shampoo', inStock: true }],
+    rating: 5.0,
+  },
 ];
 
 export const ALL_CATEGORIES = [

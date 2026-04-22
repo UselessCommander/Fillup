@@ -9,7 +9,7 @@ const BLUE = '#139ED2';
 const GREEN = '#94CF53';
 
 export default function AuthLoginPage() {
-  const { user, login, authReady } = useAuth();
+  const { user, login, register, authReady } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const rawFrom = location.state?.from;
@@ -40,6 +40,16 @@ export default function AuthLoginPage() {
     const res = await login(email, password);
     if (res.ok) navigate(from, { replace: true });
     else setError(res.error);
+  }
+
+  async function handleTestLogin() {
+    setError(null);
+    let res = await login('test@fillup.dk', 'test1234');
+    if (!res.ok) {
+      res = await register('Test Bruger', 'test@fillup.dk', 'test1234');
+    }
+    if (res.ok) navigate(from, { replace: true });
+    else setError('Kunne ikke oprette eller logge ind som testbruger.');
   }
 
   return (
@@ -107,10 +117,25 @@ export default function AuthLoginPage() {
 
           <button
             type="submit"
-            className="mt-6 w-full rounded-[5px] py-3 text-sm font-semibold text-slate-900 shadow-sm"
+            className="mt-6 w-full rounded-[5px] py-3 text-sm font-semibold text-slate-900 shadow-sm transition active:scale-[0.98]"
             style={{ backgroundColor: GREEN }}
           >
             Log ind
+          </button>
+
+          <div className="mt-4 flex items-center justify-between">
+            <div className="h-px flex-1 bg-slate-200"></div>
+            <span className="px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">eller</span>
+            <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleTestLogin}
+            className="mt-4 w-full rounded-[5px] py-3 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98]"
+            style={{ backgroundColor: BLUE }}
+          >
+            Hurtigt Test-Login
           </button>
 
           <p className="mt-6 text-center text-sm text-slate-600">

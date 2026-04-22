@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFavorites } from '../context/FavoritesContext.jsx';
 import { usePlaces } from '../context/PlacesContext.jsx';
@@ -15,9 +15,8 @@ function openGoogleMaps(place) {
 
 export default function MapTab() {
   const navigate = useNavigate();
-  const { places } = usePlaces();
+  const { places, mapSelectedPlace: selected, setMapSelectedPlace: setSelected } = usePlaces();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [selected, setSelected] = useState(null);
   
   const [transportMode, setTransportMode] = useState('driving');
   const [routeStats, setRouteStats] = useState(null);
@@ -28,6 +27,13 @@ export default function MapTab() {
     setRouteStats(null);
     setIsLiveNavigating(false);
   };
+
+  // Nulstil valg når vi forlader kortet
+  useEffect(() => {
+    return () => {
+      setSelected(null);
+    };
+  }, [setSelected]);
 
   return (
     <>

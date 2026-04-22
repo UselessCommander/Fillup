@@ -11,6 +11,8 @@ export function PlacesProvider({ children }) {
   const [categories, setCategories] = useState(['Alle', 'Shampoo', 'Vaskemiddel', 'Fødevarer']);
   const [filterOpen, setFilterOpen] = useState(false);
 
+  const [mapSelectedPlace, setMapSelectedPlace] = useState(null);
+
   const [places, setPlaces] = useState([]);
   const [listLoading, setListLoading] = useState(true);
   const [listError, setListError] = useState(null);
@@ -65,6 +67,8 @@ export function PlacesProvider({ children }) {
       listError,
       filterOpen,
       setFilterOpen,
+      mapSelectedPlace,
+      setMapSelectedPlace,
       loadPlaces,
     }),
     [
@@ -75,6 +79,7 @@ export function PlacesProvider({ children }) {
       listLoading,
       listError,
       filterOpen,
+      mapSelectedPlace,
       loadPlaces,
     ]
   );

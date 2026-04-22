@@ -20,6 +20,52 @@ export default function ProfileHomePage() {
   const { favoriteIds, recent } = useFavorites();
   const { user, logout } = useAuth();
 
+  if (!user) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-slate-50">
+        <div className="border-b border-slate-100 bg-white px-4 pb-10 pt-16">
+          <div className="mx-auto flex max-w-md flex-col items-center text-center">
+            <div
+              className="flex h-20 w-20 items-center justify-center rounded-full text-2xl font-bold text-white shadow-md mb-6"
+              style={{ backgroundColor: BLUE }}
+            >
+              FU
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Ikke logget ind</h1>
+            <p className="text-slate-600 mb-8 px-4 leading-relaxed">
+              Log ind for at gemme dine yndlings refill-steder, se din historik og tilpasse dine præferencer.
+            </p>
+            <Link
+              to="/login"
+              className="rounded-[5px] px-8 py-3.5 font-bold text-slate-900 shadow-md transition active:scale-[0.98]"
+              style={{ backgroundColor: '#94CF53' }}
+            >
+              Log ind / Opret bruger
+            </Link>
+          </div>
+        </div>
+
+        <div className="space-y-6 p-4 pb-28">
+          <section>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">Support & Info</h2>
+            <div className="space-y-2">
+              <MenuLinkRow to="/profile/help" icon={HelpCircle} label="Hjælp & kontakt" />
+              <MenuLinkRow to="/profile/about" icon={Info} label="Om FillUp" />
+            </div>
+          </section>
+
+          <section>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">Juridisk</h2>
+            <div className="space-y-2">
+              <MenuLinkRow to="/profile/privacy" icon={Shield} label="Privatlivspolitik" />
+              <MenuLinkRow to="/profile/terms" icon={FileText} label="Vilkår for brug" />
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-slate-50">
       <div className="border-b border-slate-100 bg-white px-4 pb-6 pt-8">

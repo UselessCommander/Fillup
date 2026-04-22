@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react';
 
 /** Fallback når GPS ikke er tilgængelig — centrum København */
 export const FALLBACK_COORDS = { lat: 55.681, lng: 12.57 };
@@ -64,6 +64,34 @@ function initialLocationState() {
 
 export function UserLocationProvider({ children }) {
   const [{ coords, status }, setState] = useState(initialLocationState);
+  const [compassHeading, setCompassHeading] = useState(null);
+
+  // Track orientation
+  useEffect(() => {
+    const handleOrientation = (e) => {
+      let heading = null;
+      if (e.webkitCompassHeading) {
+        // iOS
+        heading = e.webkitCompassHeading;
+      } else if (e.absolute && e.alpha !== null) {
+        // Android (alpha is counter-clockwise from East, usually we convert it, but deviceorientationabsolute gives alpha from North)
+        heading = 360 - e.alpha;
+      }
+      if (heading !== null) {
+        setCompassHeading(heading);
+      }
+    };
+
+    if (window.DeviceOrientationEvent) {
+      // For iOS 13+ we need permission, but we try to listen anyway. Some Androids allow it directly.
+      window.addEventListener('deviceorientationabsolute', handleOrientation);
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+    return () => {
+      window.removeEventListener('deviceorientationabsolute', handleOrientation);
+      window.removeEventListener('deviceorientation', handleOrientation);
+    };
+  }, []);
 
   const effective = useMemo(
     () => (coords ? { lat: coords.lat, lng: coords.lng } : FALLBACK_COORDS),
@@ -97,9 +125,10 @@ export function UserLocationProvider({ children }) {
       effective,
       usingGps,
       status,
+      compassHeading,
       refreshLocation,
     }),
-    [coords, effective, usingGps, status, refreshLocation]
+    [coords, effective, usingGps, status, compassHeading, refreshLocation]
   );
 
   return <UserLocationContext.Provider value={value}>{children}</UserLocationContext.Provider>;

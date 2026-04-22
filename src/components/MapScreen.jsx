@@ -38,9 +38,10 @@ export default function MapScreen({
   routeStats,
 }) {
   const mapRef = useRef(null);
-  const { coords, refreshLocation } = useUserLocation();
+  const { coords, compassHeading, refreshLocation } = useUserLocation();
   const [routeGeoJSON, setRouteGeoJSON] = useState(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapBearing, setMapBearing] = useState(0);
 
   const [activeStyle, setActiveStyle] = useState(MAP_STYLES[0]);
   const [showStyleMenu, setShowStyleMenu] = useState(false);
@@ -157,6 +158,7 @@ export default function MapScreen({
         mapStyle={activeStyle.style}
         style={{ width: '100%', height: '100%' }}
         onLoad={() => setMapLoaded(true)}
+        onMove={(evt) => setMapBearing(evt.viewState.bearing)}
         onClick={() => {
           if (isLiveNavigating) return; // Bloker afvælgning under navigation
           if (selectedPlace) onClearSelection();
@@ -207,20 +209,48 @@ export default function MapScreen({
         {coords && (
           <Marker longitude={coords.lng} latitude={coords.lat} style={{ zIndex: 100 }}>
             {isLiveNavigating ? (
-              // Pilot-ikon under navigation (Ligner en navigation pil)
+              // Pilot-ikon under navigation
               <div 
-                className="flex items-center justify-center rounded-full bg-white shadow-xl border-4 border-[#0F8A5K]" 
-                style={{ width: '40px', height: '40px', transform: 'rotate(-45deg)' }}
+                className="flex items-center justify-center rounded-full bg-white shadow-xl border-4 border-[#139ED2]" 
+                style={{ width: '40px', height: '40px', transform: `rotate(${(compassHeading || 0) - mapBearing - 45}deg)` }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#139ED2" stroke="#139ED2" strokeWidth="2">
                   <path d="M3 11l19-9-9 19-2-8-8-2z" />
                 </svg>
               </div>
             ) : (
-              // Alm. pulserende blå prik
-              <div className="relative flex h-5 w-5 items-center justify-center">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-[#139ED2] shadow-md"></span>
+              // Alm. pulserende blå prik med retnings-kegle
+              <div className="relative flex items-center justify-center" style={{ width: '60px', height: '60px' }}>
+                {/* Kegle / Kompas */}
+                {compassHeading !== null && (
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      transform: `rotate(${compassHeading - mapBearing}deg)`,
+                      transition: 'transform 0.2s ease-out',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '0',
+                        height: '0',
+                        borderLeft: '15px solid transparent',
+                        borderRight: '15px solid transparent',
+                        borderBottom: '30px solid rgba(19, 158, 210, 0.3)',
+                      }}
+                    />
+                  </div>
+                )}
+                {/* Selve prikken */}
+                <div className="relative flex h-5 w-5 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-[#139ED2] shadow-md z-10"></span>
+                </div>
               </div>
             )}
           </Marker>
@@ -373,6 +403,17 @@ export default function MapScreen({
             className="flex items-center gap-2 rounded-[10px] border border-black/5 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.1)] active:scale-95 transition-transform"
             onClick={async (e) => {
               e.stopPropagation();
+              
+              // Spørg om kompas-tilladelse på iOS 13+
+              if (typeof window.DeviceOrientationEvent !== 'undefined' && typeof window.DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                  const perm = await window.DeviceOrientationEvent.requestPermission();
+                  // Videresender uanset, da refreshLocation tager sig af lokation
+                } catch (err) {
+                  console.error('Kunne ikke spørge om kompas:', err);
+                }
+              }
+
               try {
                 const c = await refreshLocation();
                 mapRef.current?.flyTo({ center: [c.lng, c.lat], zoom: 15, duration: 1200 });
